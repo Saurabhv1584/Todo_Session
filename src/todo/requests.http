@@ -1,0 +1,10 @@
+### Creating a new work
+
+POST http://localhost:3000/todo/create
+content-type: application/json
+
+{
+    "title": "Pending Work",
+    "content": "Tea,Snacks,Dinner",
+    "isCompleted": false
+}
