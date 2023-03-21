@@ -1,7 +1,7 @@
-import { Controller, Body, Delete, Param, Get, Post, Res, Patch } from '@nestjs/common';
+import { Controller, Body, Delete, Param, Get, Post, Patch } from '@nestjs/common';
 import { TodoService } from './todo.service';
 import { CreateTodo } from './dto/todo.dto';
-
+import { UpdateTodoDto } from './dto/update-todo.dto';
 
 @Controller('todo')
 export class TodoController {
@@ -17,7 +17,12 @@ export class TodoController {
     findAll() {
         // return 'hi'
         return this.todoService.findAll();
-    }                                                                                       
+    }
+
+    @Get('/findOne/:id')
+    findOne(@Param('id') id: string) {
+        return this.todoService.findOne(parseInt(id));
+    }
 
     @Post('/create') 
     create(@Body() body: Partial<CreateTodo>) {
@@ -25,13 +30,14 @@ export class TodoController {
         return this.todoService.create(body);
     }
 
-    @Patch(':id') 
-    update(@Param('id') id, @Body('content') content) {
-        return this.todoService.update(id,content);
+    @Patch('/update/:id') 
+    update(@Param('id') id: string , @Body() content: UpdateTodoDto) {
+        return this.todoService.update(parseInt(id),content);
     }
 
-    @Delete(':id')
-    remove(@Param('id') id) {
-        return this.todoService.remove(id);
+    @Delete('/remove/:id')
+    remove(@Param('id') id: string ) {
+        return this.todoService.remove(parseInt(id));
     }
+
 }

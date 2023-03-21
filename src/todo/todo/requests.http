@@ -1,0 +1,29 @@
+### Creating a new work
+
+POST http://localhost:3000/todo/create
+content-type: application/json
+
+{
+    "title": "Morning Work",
+    "content": "Breakfast , Office",
+    "isCompleted": true
+}
+
+### find a particular todo with a given id
+
+GET http://localhost:3000/todo/findOne/1
+
+### find all user
+
+GET http://localhost:3000/todo/findAll
+
+### Delete a todo with a given id
+DELETE http://localhost:3000/todo/remove/1
+
+### Update a user
+PATCH http://localhost:3000/todo/update/2
+content-type: application/json
+
+{
+    "title": "Updated title"
+}

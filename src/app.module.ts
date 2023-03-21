@@ -6,6 +6,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 // import { TodoService } from './todo/todo/todo.service';
 import { Todo } from './todo/todo/todo.entity';
 import { TodoModule } from './todo/todo/todo.module';
+import { UserController } from './user/user.controller';
+import { UserService } from './user/user.service';
+import { UserModule } from './user/user.module';
 
 
 @Module({
@@ -16,9 +19,10 @@ import { TodoModule } from './todo/todo/todo.module';
       entities:[Todo],
       synchronize: true,
     }),
-    TodoModule
+    TodoModule,
+    UserModule
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, UserController],
+  providers: [AppService, UserService],
 })
 export class AppModule {}
