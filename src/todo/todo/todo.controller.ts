@@ -5,7 +5,9 @@ import { UpdateTodoDto } from './dto/update-todo.dto';
 
 @Controller('todo')
 export class TodoController {
-    constructor(private todoService: TodoService) {}
+    constructor(
+        private todoService: TodoService
+        ) {}
 
     @Get('/isWorking')
     isWorking(){
