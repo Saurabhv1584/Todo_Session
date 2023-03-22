@@ -4,20 +4,38 @@ POST http://localhost:3000/user/create
 content-type: application/json
 
 {
-    "email": "saurabhv1584@gmail.com",
-    "password":"adffasafvsvx"
+    "email": "smvnbma@gmail.com",
+    "password":"qwertyasdf"
+}
+
+### Get the currently signed in user
+GET http://localhost:3000/user/whoami
+
+
+### Sign out Current user
+POST  http://localhost:3000/user/signout
+
+ 
+### Sign In User
+
+POST http://localhost:3000/user/signin
+content-type: application/json
+
+{
+    "email": "sverma@gmail.com",
+    "password":"qwertyasdf"
 }
 
 ### find a particular with a user email
-GET http://localhost:3000/user/findUser/saurabh@asdf.com
+GET http://localhost:3000/user/finduser/saurabh@asdf.com
 
 
 ### find a particular user with id
-GET http://localhost:3000/user/findOne/1
+GET http://localhost:3000/user/findone/1
 
 
 ###find all user 
-GET http://localhost:3000/user/findAllUser
+GET http://localhost:3000/user/findalluser
 
 
 ### Delete a user with the given ID
@@ -32,3 +50,4 @@ content-type: application/json
     "email": "saurabh@asdf.com",
     "password":"saurabh"
 }
+

@@ -1,12 +1,17 @@
 import { Controller, Body, Delete,
     Param, Get, Post, Patch,
-    NotFoundException
+    NotFoundException, Session,
+    UseGuards
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserService } from './user.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserDto } from './dto/user.dto';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
+import { AuthService } from './auth.service';
+import { CurrentUser } from './decorators/current-user.decorator';
+import { User } from './user.entity';
+import { AuthGuard } from 'src/guards/auth.guard';
 
 
 @Controller('user')
@@ -14,8 +19,10 @@ import { Serialize } from 'src/interceptors/serialize.interceptor';
 export class UserController {
     
     constructor(
-        private userService: UserService
+        private userService: UserService,
+        private authService: AuthService
     ) {}
+
 
     // @Get('/userWorking')
     // userWorking() {
@@ -23,28 +30,48 @@ export class UserController {
     //     return 'You are inside User';
     // }
 
-    @Post('/create')
-    create(@Body() body: CreateUserDto) {
-        console.log(body.email,body.password);
-        return this.userService.create(body.email,body.password);
-    }
-
-    // @Post('/signin')
-    // signIn() {
-    //     try {
-            
-    //     } catch (error) {
-    //         console.log('signin error');
-    //         throw new Error(error);
-    //     }
+    // @Get('/whoami')
+    // whoAmI(@Session() session:any) {
+    //     return this.userService.findOne(session.userId);
     // }
 
-    @Get('/findUser/:email')
+    @Get('/whoami')
+    @UseGuards(AuthGuard)
+    whoAmI(@CurrentUser() user: User) {
+        return user;
+    }
+
+    @Post('signout')
+    signOut(@Session() session: any) {
+        session.userId = null;
+    }
+
+    @Post('/create')
+    async create(@Body() body: CreateUserDto, @Session() session: any) {
+        // console.log(body.email,body.password);
+        const user = await this.authService.signUp(body.email,body.password);
+        session.userId = user.id;
+        return user;
+    }
+
+    @Post('/signin')
+    async signIn(@Body() body: CreateUserDto,@Session() session: any) {
+        try {
+            const user = await this.authService.signIn(body.email,body.password);
+            session.userId = user.id;
+            return user;
+        } catch (error) {
+            console.log('signin error');
+            throw new Error(error);
+        }
+    }
+
+    @Get('/finduser/:email')
     findUser(@Param('email') email: string) {
         return this.userService.findUser(email); 
     }
     
-    @Get('/findOne/:id')
+    @Get('/findone/:id')
     async findOne(@Param('id') id: string) {
         const user = await this.userService.findOne(parseInt(id));
         if(!user){
@@ -54,7 +81,7 @@ export class UserController {
         return user;
     }
 
-    @Get('/findAllUser')
+    @Get('/findalluser')
     findAllUser() {
         return this.userService.findAllUser();
     }
