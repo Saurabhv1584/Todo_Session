@@ -1,16 +1,18 @@
 import { Controller, Body, Delete,
-     Param, Get, Post, Patch,
-     UseInterceptors, ClassSerializerInterceptor
-     } from '@nestjs/common';
-import { CreateUserDto } from './dto/user.dto';
+    Param, Get, Post, Patch,
+    NotFoundException
+} from '@nestjs/common';
+import { CreateUserDto } from './dto/create-user.dto';
 import { UserService } from './user.service';
 import { UpdateUserDto } from './dto/update-user.dto';
-
+import { UserDto } from './dto/user.dto';
+import { Serialize } from 'src/interceptors/serialize.interceptor';
 
 
 @Controller('user')
+@Serialize(UserDto)
 export class UserController {
-
+    
     constructor(
         private userService: UserService
     ) {}
@@ -37,15 +39,19 @@ export class UserController {
     //     }
     // }
 
-    @UseInterceptors(ClassSerializerInterceptor)
     @Get('/findUser/:email')
     findUser(@Param('email') email: string) {
         return this.userService.findUser(email); 
     }
-
+    
     @Get('/findOne/:id')
-    findOne(@Param('id') id: string) {
-        return this.userService.findOne(parseInt(id));
+    async findOne(@Param('id') id: string) {
+        const user = await this.userService.findOne(parseInt(id));
+        if(!user){
+            throw new NotFoundException('user not found');
+        }
+
+        return user;
     }
 
     @Get('/findAllUser')
