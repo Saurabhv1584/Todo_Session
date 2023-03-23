@@ -14,7 +14,7 @@ export class AuthService {
         // check email is already used?
         const users = await this.userService.findUser(email);
         if(users) {
-            throw new BadRequestException('email in use');
+            throw new BadRequestException('email already is in use');
         }
 
         // Hash the user password

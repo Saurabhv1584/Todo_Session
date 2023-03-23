@@ -24,11 +24,11 @@ export class UserController {
     ) {}
 
 
-    // @Get('/userWorking')
-    // userWorking() {
-    //     console.log('You are inside User');
-    //     return 'You are inside User';
-    // }
+    @Get()
+    userWorking() {
+        console.log('You are inside User');
+        return 'You are using User';
+    }
 
     // @Get('/whoami')
     // whoAmI(@Session() session:any) {
@@ -49,15 +49,22 @@ export class UserController {
     @Post('/create')
     async create(@Body() body: CreateUserDto, @Session() session: any) {
         // console.log(body.email,body.password);
-        const user = await this.authService.signUp(body.email,body.password);
-        session.userId = user.id;
-        return user;
+        try {
+            const user = await this.authService.signUp(body.email,body.password);
+            // Storing user id in cache memory
+            session.userId = user.id;
+            return user;
+        } catch (error) {
+            console.log('signup error');
+            throw new Error(error);
+        }
     }
-
+    
     @Post('/signin')
     async signIn(@Body() body: CreateUserDto,@Session() session: any) {
         try {
             const user = await this.authService.signIn(body.email,body.password);
+            // Storing user id in cache memory
             session.userId = user.id;
             return user;
         } catch (error) {

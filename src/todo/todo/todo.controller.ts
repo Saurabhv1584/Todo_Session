@@ -9,10 +9,10 @@ export class TodoController {
         private todoService: TodoService
         ) {}
 
-    @Get('/isWorking')
+    @Get()
     isWorking(){
-        console.log('This is live server');
-        return 'This is live server';
+        console.log('This is Todo live server');
+        return 'This is Todo live server';
     }
 
     @Get('/findAll')
