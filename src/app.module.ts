@@ -1,22 +1,25 @@
-import { Module } from '@nestjs/common';
+import { Module, ValidationPipe, MiddlewareConsumer } from '@nestjs/common';
+import { APP_PIPE } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-// import { TodoController } from './todo/todo/todo.controller';
-// import { TodoService } from './todo/todo/todo.service';
 import { Todo } from './todo/todo/todo.entity';
 import { TodoModule } from './todo/todo/todo.module';
-// import { UserController } from './user/user.controller';
-// import { UserService } from './user/user.service';
 import { UserModule } from './user/user.module';
 import { User } from './user/user.entity';
+// import { TodoController } from './todo/todo/todo.controller';
+// import { TodoService } from './todo/todo/todo.service';
+// import { UserController } from './user/user.controller';
+// import { UserService } from './user/user.service';
 
+const cookieSession = require('cookie-session');
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       type: 'sqlite',
-      database: 'db.sqlite',
+      database: process.env.NODE_ENV === 'test'?
+      'test.sqlite' : 'db.sqlite',
       entities:[Todo,User],
       synchronize: true,
     }),
@@ -24,6 +27,23 @@ import { User } from './user/user.entity';
     UserModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_PIPE,
+      useValue: new ValidationPipe({
+        whitelist: true,
+      })
+    }
+  ],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply( cookieSession({
+      keys: ['asdf'],
+    }),
+    )
+    .forRoutes('*');
+  }
+  
+}

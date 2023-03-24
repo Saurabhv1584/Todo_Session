@@ -75,7 +75,11 @@ export class UserController {
 
     @Get('/finduser/:email')
     findUser(@Param('email') email: string) {
-        return this.userService.findUser(email); 
+        try {
+            return this.userService.findUser(email); 
+        } catch (error) {
+            throw new NotFoundException('user not found');
+        }
     }
     
     @Get('/findone/:id')

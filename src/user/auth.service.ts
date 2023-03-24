@@ -3,6 +3,8 @@ import { UserService } from "./user.service";
 import { randomBytes, scrypt as _scrypt } from "crypto";
 import { promisify } from "util";
 
+
+
 const scrypt = promisify(_scrypt);
 
 
@@ -13,7 +15,7 @@ export class AuthService {
     async signUp(email:string , password: string) {
         // check email is already used?
         const users = await this.userService.findUser(email);
-        if(users) {
+        if(users.length) {
             throw new BadRequestException('email already is in use');
         }
 
